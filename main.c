@@ -100,7 +100,6 @@ void delay1ms(uint32_t dt){
 }
 
 void TA2_0_IRQHandler(void) {
-
     count++;
     if(count >= MAX_COUNT) {
          count=0;
@@ -109,61 +108,56 @@ void TA2_0_IRQHandler(void) {
 }
 
 //slau597c,slau365h
-void pwmInitA2(void) { //works
-
-    P5->DIR |= 0x40;  //P5.6, output 0100_0000
-    P5->SEL0 |= 0x40; //P5.6,TimerA2.1 function
+void pwmInitA2(void) { // works
+    P5->DIR |= 0x40;  // P5.6, output 0100_0000
+    P5->SEL0 |= 0x40; // P5.6,TimerA2.1 function
     P5->SEL1 &= ~0x40;
     TIMER_A2->CTL |= 0x02F0;      // reset and start Timer A2 in up mode 0000_0000_0001_0100 //works
 
-    TIMER_A2->CCTL[0] = 0x0080;  //CCIO toggle 0000_0000_1001_0000,
+    TIMER_A2->CCTL[0] = 0x0080;  // CCIO toggle 0000_0000_1001_0000,
     TIMER_A2->CCR[0] = MAX_TIME;  // 
     //TIMER_A2->EX0 = 0x0001;    // divder /1
-    TIMER_A2->EX0 = 0x0000;    //input clock divider to 6
+    TIMER_A2->EX0 = 0x0000;    // input clock divider to 6
 
-    TIMER_A2->CCTL[1] = 0x0040;    //CCR1 toggle/reset 0000_0000_0100_0000
+    TIMER_A2->CCTL[1] = 0x0040;    // CCR1 toggle/reset 0000_0000_0100_0000
 
     TIMER_A2->CTL |= 0x0014;      // reset and start Timer A2 in up mode 
 }
 
 void pwmInit5(void) {
-
-    P5->DIR |= 0x40;  //P5.6, P5.7 output 1100_0000 0xD0
-    P5->SEL0 |= 0x40; //P5.6,P5.7 Timer0A function
+    P5->DIR |= 0x40;  // P5.6, P5.7 output 1100_0000 0x40
+    P5->SEL0 |= 0x40; // P5.6,P5.7 Timer0A function
     P5->SEL1 &= ~0x40;
 
-    TIMER_A2->CCTL[0] = 0x0090;  //CCIO toggle 0000_0000_1001_0000
-    TIMER_A2->CCR[0] = MAX_TIME;  // 
+    TIMER_A2->CCTL[0] = 0x0090;   // CCIO toggle 0000_0000_1001_0000
+    TIMER_A2->CCR[0] = MAX_TIME;   
  
-    TIMER_A2->CCTL[1] = 0x0040;    //CCR1 toggle/reset 0000_0000_0100_0000
+    TIMER_A2->CCTL[1] = 0x0040;    // CCR1 toggle/reset 0000_0000_0100_0000
 
-    TIMER_A2->CTL = 0x02F0; //0000_0010_1111_0000
+    TIMER_A2->CTL = 0x02F0;   // 0000_0010_1111_0000
 
-    TIMER_A2->EX0 = 0x0000;    //input clock divider to 6
+    TIMER_A2->EX0 = 0x0000;    // input clock divider to 6
     NVIC->IP[3] = (NVIC->IP[3]&0xFFFFFF00)|0x00000040;    //priority 2 11111111_00000000, 0100_0000
     NVIC->ISER[0] = 0x00001000;   // enable interrupt 12 in NVIC
 
     TIMER_A2->CTL |= 0x0014;      // reset and start Timer A2 in up mode 0000_0000_0001_0100 works
-
 }
-/*****************************/
+
 void pwmInitA0(void) { //works
-    
-    P2->DIR |= 0xB0;  //P2.4, P2.5 output  1011_0000= 8+2+1=11=B0 
-    P2->SEL0 |=0xB0; //P2.4,P2.5 Timer0A function
+    P2->DIR |= 0xB0;  // P2.4, P2.5 output  1011_0000= 8+2+1=11=B0 
+    P2->SEL0 |=0xB0; // P2.4,P2.5 Timer0A function
     P2->SEL1 &= ~0xB0;
     TIMER_A2->CTL = 0x0280;   // 0000_0010_1000_0000// 
 
-    TIMER_A0->CCTL[0] = 0x0080;  //CCIO toggle 0000_0000_1000_0000, bit7-5
-    TIMER_A0->CCR[0] = MAX_TIME;  // Period = 2*period*8*83.33ns = 1.333*period
+    TIMER_A0->CCTL[0] = 0x0080;  // CCIO toggle 0000_0000_1000_0000, bit7-5
+    TIMER_A0->CCR[0] = MAX_TIME; 
     TIMER_A0->EX0 = 0x0000;    // divder /1
 
-    TIMER_A0->CCTL[1] = 0x0040;    //CCR1 toggle/reset 0000_0000_0100_0000 A0.1 P2.4
+    TIMER_A0->CCTL[1] = 0x0040;    // CCR1 toggle/reset 0000_0000_0100_0000 
 
-    TIMER_A0->CCTL[2] = 0x0040; //CCR1 toggle/reset 0000_0000_0100_0000 A0.2 P2.5
+    TIMER_A0->CCTL[2] = 0x0040;   // CCR1 toggle/reset 0000_0000_0100_0000 
 
-    TIMER_A0->CCTL[4] = 0x0040; //CCR1 toggle/reset 0000_0000_0100_0000 A0.1 P2.7
+    TIMER_A0->CCTL[4] = 0x0040;   // CCR1 toggle/reset 0000_0000_0100_0000
 
-    TIMER_A0->CTL = 0x02F0; //works
-
+    TIMER_A0->CTL = 0x02F0;    // works
 }
